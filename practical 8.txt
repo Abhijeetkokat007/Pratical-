@@ -1,0 +1,88 @@
+SQL> create table library(
+  2  bno number(5),
+  3  bname varchar2(20),
+  4  author varchar2(20),
+  5  allowed_days number(5)
+  6  );
+
+Table created.
+
+SQL> insert into library
+  2  values(1,'JAVA','Mr Patil',10);
+
+1 row created.
+
+SQL> insert into library
+  2  values(2,'VB','Mr Sharma',15);
+
+1 row created.
+
+SQL> insert into library
+  2  values(3,'CPP','Mr Surve',15);
+
+1 row created.
+
+SQL> select*from library;
+
+       BNO BNAME                AUTHOR               ALLOWED_DAYS
+---------- -------------------- -------------------- ------------
+         1 JAVA                 Mr Patil                       10
+         2 VB                   Mr Sharma                      15
+         3 CPP                  Mr Surve                       15
+
+SQL>  create table library_audit(bno number(5),old_all_days number(5),new_all_days number(5));
+
+Table created.
+
+SQL> create or replace trigger tr1
+  2  before update or delete on library
+  3  for each row
+  4  begin
+  5  insert into library_audit values(:new.bno,:old.allowed_days,:new.allowed_days);
+  6  end;
+  7  /
+
+Trigger created.
+
+SQL> select*from library;
+
+       BNO BNAME                AUTHOR               ALLOWED_DAYS
+---------- -------------------- -------------------- ------------
+         1 JAVA                 Mr Patil                       10
+         2 VB                   Mr Sharma                      15
+         3 CPP                  Mr Surve                       15
+
+SQL> update library set allowed_days = 15 where bno = 1;
+
+1 row updated.
+
+SQL> select * from library;
+
+       BNO BNAME                AUTHOR               ALLOWED_DAYS
+---------- -------------------- -------------------- ------------
+         1 JAVA                 Mr Patil                       15
+         2 VB                   Mr Sharma                      15
+         3 CPP                  Mr Surve                       15
+
+SQL> select * from library_audit;
+
+       BNO OLD_ALL_DAYS NEW_ALL_DAYS
+---------- ------------ ------------
+         1           10           15
+
+SQL> delete from library where bno = 1;
+
+1 row deleted.
+SQL> select * from library;
+
+       BNO BNAME                AUTHOR               ALLOWED_DAYS
+---------- -------------------- -------------------- ------------
+         2 VB                   Mr Sharma                      15
+         3 CPP                  Mr Surve                       15
+
+SQL> select * from library_audit;
+
+       BNO OLD_ALL_DAYS NEW_ALL_DAYS
+---------- ------------ ------------
+         1           10           15
+                     15

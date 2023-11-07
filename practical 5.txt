@@ -1,0 +1,109 @@
+SQL> create table borrow(
+  2  roll_no number(5),
+  3  name varchar2(20),
+  4  dateofissue date,
+  5  NameofBook varchar2(20),
+  6  status varchar2(20)
+  7  );
+
+Table created.
+
+SQL> insert into borrow
+  2  values(1,'Poonam','7-Aug-22','DBMS','I');
+
+1 row created.
+
+SQL> insert into borrow
+  2  values(2,'Dipali','10-Sep-22','JAVA','I');
+
+1 row created.
+
+SQL> insert into borrow
+  2  values(3,'Arpita','14-Aug-22','OS','I');
+
+1 row created.
+
+SQL> select *from borrow;
+
+   ROLL_NO NAME                 DATEOFISS NAMEOFBOOK
+---------- -------------------- --------- --------------------
+STATUS
+--------------------
+         1 Poonam               07-AUG-22 DBMS
+I
+
+         2 Dipali               10-SEP-22 JAVA
+I
+
+         3 Arpita               14-AUG-22 OS
+I
+
+
+SQL> create table fine(roll_no number(5),
+  2  sdate date,
+  3  Amt number(5)
+  4  );
+
+Table created.
+
+
+SQL> Declare
+  2     rno number(3):= &roll_number;
+  3      bname varchar2(20):='&book_name';
+  4      no_days number(7);
+  5      issuedate date;
+  6      fineamt number(5):=0;
+  7      begin
+  8      select dateofissue into issuedate from borrow where roll_no = rno;
+  9      select sysdate -to_date(issuedate) days into no_days from dual;
+ 10     if(no_days >=15 and no_days <=30) then
+ 11     fineamt:= no_days*5;
+ 12     elsif no_days>30 then
+ 13     fineamt := no_days*50;
+ 14     end if;
+ 15     update borrow set status = 'R' where roll_no = rno;
+ 16     if fineamt >= 0 then
+ 17     insert into fine values (rno,sysdate,fineamt);
+ 18     end if;
+ 19     update borrow set status = 'R'where roll_no = rno;
+ 20     if fineamt >= 0 then
+ 21     insert into fine values (rno,sysdate,fineamt);
+ 22     end if;
+ 23     EXCEPTION
+ 24     WHEN no_data_found THEN
+ 25     dbms_output.put_line('Record not found');
+ 26     end;
+ 27  /
+Enter value for roll_number: 1
+old   2:    rno number(3):= &roll_number;
+new   2:    rno number(3):= 1;
+Enter value for book_name: DBMS
+old   3:     bname varchar2(20):='&book_name';
+new   3:     bname varchar2(20):='DBMS';
+
+PL/SQL procedure successfully completed.
+
+SQL> select *from borrow;
+
+   ROLL_NO NAME                 DATEOFISS NAMEOFBOOK
+---------- -------------------- --------- --------------------
+STATUS
+--------------------
+         1 Poonam               07-AUG-22 DBMS
+R
+
+         2 Dipali               10-SEP-22 JAVA
+I
+
+         3 Arpita               14-AUG-22 OS
+I
+
+
+SQL> select *from fine;
+
+   ROLL_NO SDATE            AMT
+---------- --------- ----------
+         1 08-OCT-23      21350
+         1 08-OCT-23      21350
+
+SQL>

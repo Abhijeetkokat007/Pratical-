@@ -1,0 +1,89 @@
+SQL> create table O_RollCall(roll_no number(3),name varchar2(20));
+
+Table created.
+
+SQL> insert  into O_RollCall
+  2  values(1,'Poonam');
+
+1 row created.
+
+SQL> insert  into O_RollCall
+  2  values(2,'Dipali');
+
+1 row created.
+
+SQL> insert  into O_RollCall
+  2  values(3,'Arpita');
+
+1 row created.
+
+SQL> select * from O_RollCall;
+
+   ROLL_NO NAME
+---------- --------------------
+         1 Poonam
+         2 Dipali
+         3 Arpita
+
+
+SQL> create table N_RollCall(
+  2  roll_no number(3),
+  3  name varchar2(20)
+  4  );
+
+Table created.
+
+SQL> insert into N_RollCall
+  2  values(1,'Poonam');
+
+1 row created.
+
+SQL> select *from N_RollCall;
+
+   ROLL_NO NAME
+---------- --------------------
+         1 Poonam
+
+SQL> declare
+  2  cursor cur1 is
+  3  select roll_no,name from O_RollCall;
+  4  cursor cur2 is
+  5  select roll_no from N_RollCall;
+  6  r number(3);
+  7  rno number(3);
+  8  nm varchar2(20);
+  9  begin
+ 10  open cur1;
+ 11  open cur2;
+ 12  loop
+ 13  fetch cur1 into rno,nm;
+ 14  fetch cur2 into r;
+ 15  exit when cur1%found =false;
+ 16  if r<> rno then
+ 17  insert into N_RollCall values(rno,nm);
+ 18  end if;
+ 19  end loop;
+ 20  close cur1;
+ 21  end;
+ 22  /
+
+PL/SQL procedure successfully completed.
+
+PL/SQL procedure successfully completed.
+
+SQL> select *from O_RollCall;
+
+   ROLL_NO NAME
+---------- --------------------
+         1 Poonam
+         2 Dipali
+         3 Arpita
+
+SQL> select*from N_RollCall;
+
+   ROLL_NO NAME
+---------- --------------------
+         1 Poonam
+         2 Dipali
+         3 Arpita
+

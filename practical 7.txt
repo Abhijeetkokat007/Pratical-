@@ -1,0 +1,26 @@
+
+SQL*Plus: Release 11.2.0.2.0 Production on Sun Oct 8 07:56:25 2023
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+SQL> connect;
+Enter user-name: dipali
+Enter password:
+Connected.
+SQL> exec proc_Grade(1,'poonam',1000);
+
+PL/SQL procedure successfully completed.
+
+SQL> select*from stud_marks;
+
+NAME                 TOTAL_MARKS
+-------------------- -----------
+poonam                      1000
+
+SQL> select*from result;
+
+      ROLL NAME                 CLASS
+---------- -------------------- --------------------
+         1 poonam               Destination
+
+SQL>
